@@ -56,43 +56,50 @@ class MainActivity : AppCompatActivity(){
 
         binding.buttonAdd.setOnClickListener{
 
-            val builder = StringBuilder()
-            builder.clear()
+            val userInput=binding.ValueField.text.toString()
 
-            val date = Date(System.currentTimeMillis())
-            builder.append("$date,")
+            if (userInput.contains(',')){
+                Toast.makeText(this, " use . insead of , ", Toast.LENGTH_LONG).show();
+            }else {
 
-            builder.append(binding.spinnerLayer1.selectedItem.toString())
-            if (binding.spinnerLayer2.visibility == View.VISIBLE){
-                builder.append(":"+binding.spinnerLayer2.selectedItem.toString())
-                if (binding.spinnerLayer3.visibility == View.VISIBLE){
-                    builder.append(":"+binding.spinnerLayer3.selectedItem.toString())
-                    if (binding.spinnerLayer4.visibility == View.VISIBLE){
-                        builder.append(":"+binding.spinnerLayer4.selectedItem.toString())
+                val builder = StringBuilder()
+                builder.clear()
+
+                val date = Date(System.currentTimeMillis())
+                builder.append("$date,")
+
+                builder.append(binding.spinnerLayer1.selectedItem.toString())
+                if (binding.spinnerLayer2.visibility == View.VISIBLE) {
+                    builder.append(":" + binding.spinnerLayer2.selectedItem.toString())
+                    if (binding.spinnerLayer3.visibility == View.VISIBLE) {
+                        builder.append(":" + binding.spinnerLayer3.selectedItem.toString())
+                        if (binding.spinnerLayer4.visibility == View.VISIBLE) {
+                            builder.append(":" + binding.spinnerLayer4.selectedItem.toString())
+                        }
                     }
                 }
+
+
+                if (userInput.isNotEmpty()) {
+                    builder.append(",$userInput")
+                }
+
+
+                builder.append("\n")
+                val data = builder.toString()
+
+
+                // write to file
+                val fileOutputStream: FileOutputStream =
+                    openFileOutput(fileName, Context.MODE_APPEND)  // std is Context.MODE_PRIVATE
+                fileOutputStream.write(data.toByteArray())
+                fileOutputStream.close()
+
+                binding.ValueField.text = null
+
+                var dataDir: File = filesDir
+                Toast.makeText(this, "Saved to $dataDir/$fileName", Toast.LENGTH_LONG).show();
             }
-            builder.append(","+binding.ValueField.text.toString())
-
-
-            builder.append("\n")
-            val data = builder.toString()
-
-
-
-            // write to file
-            val fileOutputStream : FileOutputStream = openFileOutput(fileName, Context.MODE_APPEND)  // std is Context.MODE_PRIVATE
-            fileOutputStream.write(data.toByteArray())
-
-
-            var dataDir:File = filesDir
-            Toast.makeText(this, "Saved to $dataDir/$fileName", Toast.LENGTH_LONG).show();
-
-            fileOutputStream.close()
-
-
-            binding.ValueField.text = null
-
 
         }
 
@@ -246,7 +253,8 @@ class MainActivity : AppCompatActivity(){
                 val size = lines.size
 
                 lines = lines.take(size - 1)  //+ lines.drop(size - 1)
-                val text = lines.joinToString(System.lineSeparator())
+
+                val text = lines.joinToString(System.lineSeparator())+"\n"
                 f.writeText(text)
             }else
             {
