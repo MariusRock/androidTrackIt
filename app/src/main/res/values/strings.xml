@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">TrackItFirst</string>
+
+
+    <string-array name="eventTypes">
+        <item> Befund </item>
+        <item> Vorfall </item>
+        <item> Symptom </item>
+        <item> Diagnose </item>
+    </string-array>
+
+    <string-array name="findings">
+        <item> Blutdruck </item>
+        <item> Gewicht </item>
+        <item> Blutwert </item>
+        <item> Stuhlgang </item>
+        <item> Wasser gelassen </item>
+        <item> Temperatur (Fieber) </item>
+    </string-array>
+
+    <string-array name="Blutwerte">
+        <item> Erythrozyten </item>
+        <item> Hämoglobin </item>
+        <item> Hämatokrit </item>
+        <item> MCV </item>
+        <item> MCH </item>
+        <item> MCHC </item>
+        <item> Leukozyten </item>
+        <item> Thrombozyten </item>
+    </string-array>
+
+    <string-array name="HämoglobinUnits">
+        <item> mmol/l </item>
+        <item> g/dl </item>
+    </string-array>
+
+    <string-array name="ErythrozytenUnits">
+        <item> TPt/l </item>
+        <item> x10^12/l </item>
+    </string-array>
+
+</resources>
