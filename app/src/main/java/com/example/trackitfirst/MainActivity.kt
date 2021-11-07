@@ -1,6 +1,7 @@
 package com.example.trackitfirst
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -19,7 +20,13 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.lang.StringBuilder
 import android.text.method.ScrollingMovementMethod
+import android.view.Menu
+import android.view.MenuItem
 import kotlin.properties.Delegates
+import android.os.Environment
+
+
+
 
 
 //  AdapterView.OnItemSelectedListener ,war auch irgendwie drine ?!
@@ -32,9 +39,98 @@ class MainActivity : AppCompatActivity(){
     private lateinit var spinnerL3 : Spinner
     private var spinnerL3position by Delegates.notNull<Int>()
 
+    var fileName = "TrackItData.csv"
+    lateinit var loadedContent : String
 
     private lateinit var spinnerUnits : Spinner
 
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.custommenue,menu)
+
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.itemId){
+            R.id.Import -> {
+
+                var text = ""
+
+                val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val f = File(dir,"import.txt")
+                if (f.exists()) {
+                    // read from external file
+                    var lines = f.readLines()
+                    val size = lines.size
+                    lines = lines.take(size)
+                    text = lines.joinToString(System.lineSeparator())+"\n"
+
+                    // write in internal file
+                    val fnew = File(filesDir,fileName)
+                    fnew.writeText(text)
+
+                    Toast.makeText(this, "Import done", Toast.LENGTH_SHORT).show()
+                }else
+                {
+                    Toast.makeText(this, "File import.txt could not loaded from Downloads directory", Toast.LENGTH_LONG).show()
+                }
+            };
+            R.id.Export -> {
+
+                load();
+
+                val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                //val dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                try{
+                val f = File(dir,"export.txt")
+                //f.bufferedWriter().use { out -> out.write(loadedContent) }
+                f.writeText(loadedContent)
+                }
+                catch (e: Exception){
+                    Toast.makeText(this, "exception "+e.toString(), Toast.LENGTH_LONG).show();
+
+                }
+
+                Toast.makeText(this, dir.toString()+"/export.txt", Toast.LENGTH_LONG).show();
+
+            }
+            R.id.share -> {
+
+                load();
+
+                val intent = Intent(Intent.ACTION_SEND)
+                //intent.action = Intent.ACTION_SEND
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_TEXT,loadedContent)
+                val chooser = Intent.createChooser(intent,"Share using ...")
+                startActivity(chooser)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun load(){
+
+        var fileInputStream:FileInputStream? = null
+        fileInputStream = openFileInput(fileName)
+        var inputStreamReader : InputStreamReader = InputStreamReader(fileInputStream)
+        var bufferedReader: BufferedReader = BufferedReader(inputStreamReader)
+
+        val stringBuilder:StringBuilder = StringBuilder()
+
+        stringBuilder.append(bufferedReader.readText())
+        fileInputStream.close()
+
+
+        loadedContent= stringBuilder.toString()
+
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +141,7 @@ class MainActivity : AppCompatActivity(){
 
 
 
-        var fileName = "TrackItData.csv"
+
         val spinnerEvent : Spinner = findViewById(R.id.spinnerLayer1)
         spinnerL2 = findViewById(R.id.spinnerLayer2)
         spinnerL3 = findViewById(R.id.spinnerLayer3)
@@ -97,14 +193,11 @@ class MainActivity : AppCompatActivity(){
 
                 binding.ValueField.text = null
 
-                var dataDir: File = filesDir
+                var dataDir: File = filesDir // https://developer.android.com/training/data-storage/app-specific
                 Toast.makeText(this, "Saved to $dataDir/$fileName", Toast.LENGTH_LONG).show();
             }
 
         }
-
-
-
 
 
         binding.buttonLoad.setOnClickListener{
@@ -122,13 +215,7 @@ class MainActivity : AppCompatActivity(){
                 //binding.editTextTextMultiLine2.setText(stringBuilder.toString())
                 binding.textView2.text = stringBuilder.toString()
                 binding.textView2.movementMethod = ScrollingMovementMethod()
-
-
         }
-
-
-
-
 
 
         // src: https://www.geeksforgeeks.org/spinner-in-kotlin/
