@@ -4,4 +4,4 @@ When having certain health issues, finding the diagnosis can be difficult. Espec
 The latest stable Version can be downloaded [here](http://2g1.de/s/TrackItVersions/) 
 
 The User Interface is currently in german only.
-The App is currently in development for Android 10 oh higher (minSdk 29,targetSdk 31).
+The App is currently in development for Android 10 or higher (minSdk 29,targetSdk 31).
