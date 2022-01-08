@@ -215,6 +215,13 @@ class MainActivity : AppCompatActivity(){
                 //binding.editTextTextMultiLine2.setText(stringBuilder.toString())
                 binding.textView2.text = stringBuilder.toString()
                 binding.textView2.movementMethod = ScrollingMovementMethod()
+
+
+                val scrollToY = stringBuilder.lines().size * binding.textView2.lineHeight - 16 * binding.textView2.lineHeight // up to 16 lines are visible and dont need scrolling
+                if (scrollToY>0) {
+                    binding.textView2.scrollTo(0, scrollToY)
+                    //Toast.makeText(this, "lines:"+stringBuilder.lines().size+" lineheigt: "+binding.textView2.lineHeight , Toast.LENGTH_SHORT).show()
+                }
         }
 
 
